@@ -61,6 +61,23 @@ const ProductsPage = () => {
                 setCart([...cart, { id, qty: 1}]);
             }
         };
+    // useRef
+    const cartRef = useRef(JSON.parse(localStorage.getItem("cart")) || []);
+
+    const handleAddToCartRef = (id) => {
+        cartRef.current = [...cartRef.current, { id, qty: 1 }];
+        localStorage.setItem("cart", JSON.stringify(cartRef.current));
+    };
+
+    const totalPriceRef = useRef(null);
+
+    useEffect(() => {
+        if (cart.length > 0) {
+            totalPriceRef.current.style.display = "table-row";
+        } else {
+            totalPriceRef.current.style.display = "none";
+        }
+    }, [cart]);
     return (
         <Fragment>
         <div className="flex justify-end h-20 bg-teal-300 text-white items-center px-10">
@@ -98,7 +115,7 @@ const ProductsPage = () => {
                                 </tr>
                                 )
                             })}
-                            <tr className="text-s">
+                            <tr ref={totalPriceRef}>
                                 <td colSpan={3}><b>Total Price</b></td>
                                 <td><b>
                                     Rp{" "}{totalPrice.toLocaleString("id-ID", {styles: "currency",currency: "IDR",})}
